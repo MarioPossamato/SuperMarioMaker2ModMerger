@@ -75,6 +75,26 @@ SuperMarioMaker2Mods = [ #==== Mods To Merge ====#
     # "SuperMarioMaker2Mods\\SuperMarioMaker2ModExample6"
 ]
 
+#==== Check If The Directories Exist ====#
+
+if os.path.exists(SuperMarioMaker2):
+    pass
+else:
+    raise Exception('Super Mario Maker 2 Location Not Found!')
+
+if os.path.exists(SuperMarioMaker2ModMergerOutput):
+    pass
+else:
+    os.mkdir(SuperMarioMaker2ModMergerOutput)
+
+for SuperMarioMaker2Mod in SuperMarioMaker2Mods:
+    if os.path.exists(SuperMarioMaker2Mod):
+        pass
+    else:
+        raise Exception('Super Mario Maker 2 Mod Location Not Found!')
+
+#========================================#
+
 def main():
     print("Merging Super Mario Maker 2 Mods, Please Wait...")
     for SuperMarioMaker2Mod in SuperMarioMaker2Mods: #==== Loop For Every Mod To Merge ====#
