@@ -14,7 +14,7 @@
 # Need https://github.com/DarkMatterCore/nxdumptool/releases
 # To Dump One.
 #
-# The Filesystem Should Resemble The Following
+# The Filesystem Should Resemble The Following:
 #
 # SuperMarioMaker2ModMerger
 # └───SuperMarioMaker2
@@ -52,19 +52,16 @@
 #
 # Also, Merging Multiple Mods May Take Some Time, So Be Patient! :)
 #
-#==== Imports ====#
-import os, pathlib, time
-import zstd # Zstandard Compression Library
-import zstandard # Zstandard Compression Library
-import libyaz0 # Yaz0 Compression Library
-import sarc # Archive File Library
-import byml # Binary YML File Module
-# from msbt import MSBT # Message File Module
 #============================================#
 #
-# New Additions In SuperMarioMaker2ModMerger v0.2:
-# ├───Added Decompression/Compression For Yaz0 Compressed SARC Archives
-# └───Fixed Some Errors With Creating sarc.sarc.SARCWriter Objects
+#==== Imports ====#
+import os, pathlib, time
+import zstd # Zstandard Compression Library: https://github.com/sergey-dryabzhinsky/python-zstd
+import zstandard # Another Zstandard Compression Library: https://github.com/indygreg/python-zstandard
+import libyaz0 # Yaz0 Compression Library By MasterVermilli0n/AboodXD: https://github.com/aboood40091/libyaz0
+import sarc # Archive File Library: https://github.com/zeldamods/sarc/
+import SarcLib # Archive File Library By MasterVermilli0n/AboodXD: https://github.com/aboood40091/SarcLib
+#============================================#
 
 SuperMarioMaker2 = "SuperMarioMaker2" #==== Super Mario Maker 2 Directory ====#
 SuperMarioMaker2ModMergerOutput = "SuperMarioMaker2ModMergerOutput" #==== Super Mario Maker 2 Mod Merger Output Directory ====#
@@ -88,91 +85,149 @@ def main():
 
                 file_path = path[len(SuperMarioMaker2Mod):]+"\\"+file #==== Path Where The Archive File Is Located Inside The Game Files ====#
 
-                print(SuperMarioMaker2Mod+file_path)
-
-                #==== Check If File Exists In Original Game Dump ====#
                 if os.path.exists(SuperMarioMaker2+file_path):
 
-                    #==== Create Old And New Archive Objects For Data Comparison ====#
-                    original_archive = SuperMarioMaker2+file_path
-                    if original_archive.endswith(".zs"): #==== Check If The Original File Is A Zstandard Compressed SARC Archive File ====#
-                        old_archive = sarc.SARC(zstandard.decompress(open(SuperMarioMaker2+file_path, "rb").read())) #==== Read/Decompress Original zstandard SARC Archive File And Use It To Create New sarc.sarc.SARC Object ====#
-                    elif original_archive.endswith(".szs"): #==== Check If The File Is A Yaz0 Compressed SARC Archive File ====#
-                        old_archive = sarc.SARC(libyaz0.decompress(open(SuperMarioMaker2+file_path, "rb").read())) #==== Read/Decompress Original YAZ0 SARC Archive File And Use It To Create New sarc.sarc.SARC Object ====#
-                    elif os.path.splitext(original_archive)[1] in [".sarc", ".pack", ".arc"]: #==== Check If File Is Still A Valid SARC Arhive File ====#:
-                        old_archive = sarc.SARC(open(SuperMarioMaker2+file_path, "rb").read()) #==== Original Super Mario Maker 2 Archive ====#
-                    else:
-                        if not os.path.exists(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]): #==== Check If The Directory Exists ====#
-                            os.makedirs(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]) #==== Create Directories ====#
-                            open(SuperMarioMaker2ModMergerOutput+file_path, "wb").write(open(SuperMarioMaker2Mod+file_path, "rb").read()) #==== Create File ====#
+                    print(SuperMarioMaker2Mod+file_path)
+
+                    #==== Check If File Exists In Original Game Dump ====#
+                    if os.path.exists(SuperMarioMaker2+file_path):
+
+                        #==== Create Old And New Archive Objects For Data Comparison ====#
+                        original_archive = SuperMarioMaker2+file_path
+                        if original_archive.endswith(".zs"): #==== Check If The Original File Is A Zstandard Compressed SARC Archive File ====#
+                            old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                            old_archive.load(zstandard.decompress(open(SuperMarioMaker2+file_path, "rb").read()))
+                        elif original_archive.endswith(".szs"): #==== Check If The File Is A Yaz0 Compressed SARC Archive File ====#
+                            old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                            old_archive.load(libyaz0.decompress(open(SuperMarioMaker2+file_path, "rb").read())) #==== Read/Decompress Original YAZ0 SARC Archive File And Use It To Create New SarcLib.FileArchive.SARC_Archive Object ====#
+                        elif os.path.splitext(original_archive)[1] in [".sarc", ".pack", ".arc"]: #==== Check If File Is Still A Valid SARC Archive File ====#:
+                            old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                            old_archive.load(open(SuperMarioMaker2+file_path, "rb").read()) #==== Original Super Mario Maker 2 Archive ====#
                         else:
-                            open(SuperMarioMaker2ModMergerOutput+file_path, "wb").write(open(SuperMarioMaker2Mod+file_path, "rb").read()) #==== Create File ====#
+                            if not os.path.exists(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]): #==== Check If The Directory Exists ====#
+                                os.makedirs(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]) #==== Create Directories ====#
+                                open(SuperMarioMaker2ModMergerOutput+file_path, "wb").write(open(SuperMarioMaker2Mod+file_path, "rb").read()) #==== Create File ====#
+                            else:
+                                open(SuperMarioMaker2ModMergerOutput+file_path, "wb").write(open(SuperMarioMaker2Mod+file_path, "rb").read()) #==== Create File ====#
 
-                if file.endswith(".zs"): #==== Check If The File Is A Zstandard Compressed SARC Archive File ====#
-                    new_archive = sarc.SARC(zstandard.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())) #==== Read/Decompress zstandard SARC Archive File And Use It To Create New sarc.sarc.SARC Object ====#
-                elif file.endswith(".szs"): #==== Check If The File Is A Yaz0 Compressed SARC Archive File ====#
-                    new_archive = sarc.SARC(libyaz0.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())) #==== Read/Decompress YAZ0 SARC Archive File And Use It To Create New sarc.sarc.SARC Object ====#
-                else:
-                    if os.path.splitext(file)[1] in [".sarc", ".pack", ".arc"]: #==== Check If File Is Still A Valid SARC Arhive File ====#
-                        new_archive = sarc.SARC(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()) #==== Read SARC Archive File And Use It To Create New sarc.sarc.SARC Object ====#
+                    if file.endswith(".zs"): #==== Check If The File Is A Zstandard Compressed SARC Archive File ====#
+                        _new_archive_ = sarc.SARC(zstandard.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()))
+                        new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                        new_archive.load(zstandard.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())) #==== Read/Decompress zstandard SARC Archive File And Use It To Create New SarcLib.FileArchive.SARC_Archive Object ====#
+                    elif file.endswith(".szs"): #==== Check If The File Is A Yaz0 Compressed SARC Archive File ====#
+                        _new_archive_ = sarc.SARC(libyaz0.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()))
+                        new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                        new_archive.load(libyaz0.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())) #==== Read/Decompress YAZ0 SARC Archive File And Use It To Create New SarcLib.FileArchive.SARC_Archive Object ====#
                     else:
-                        print(False)
+                        if os.path.splitext(file)[1] in [".sarc", ".pack", ".arc"]: #==== Check If File Is Still A Valid SARC Archive File ====#
+                            _new_archive_ = sarc.SARC(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())
+                            new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                            new_archive.load(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()) #==== Read SARC Archive File And Use It To Create New SarcLib.FileArchive.SARC_Archive Object ====#
+                        else:
+                            print(False)
 
-                file_names = [] #==== List To Store A List Of All Files In Archive ====#
+                    for file_name in _new_archive_.list_files(): #==== Compare Data For Each File Inside The Archive
+                        print(pathlib.PurePath(file_name))
 
-                for file_name in new_archive.list_files(): #==== Compare Data For Each File Inside The Archive
+                        if old_archive[file_name].data == new_archive[file_name].data: #==== Compare The New Archive's File's Data To The Original Archive's File's Data ====#
+                            pass
+                        else:
+                            Replacements.append([file_name, new_archive[file_name].data]) #==== Append The File's Name And Data To The Replacements List For Later Use====#
 
-                    file_names.append(file_name) #==== Add File To List ====#
-
-                    #==== Show Files In A File Tree ====#
-                    if file_names.index(file_name)+1 == len(new_archive.list_files()):
-                        print("└───"+str(pathlib.PurePath(file_name)))
+                    if not os.path.exists(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]): #==== Check If Directories Exist ====#
+                        os.makedirs(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]) #==== Create Directories ====#
                     else:
-                        print("├───"+str(pathlib.PurePath(file_name)))
-
-                    if old_archive.get_file_data(file_name) == new_archive.get_file_data(file_name):
                         pass
+
+                    if not os.path.exists(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file): #==== Check If File Exists ====#
+                        open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file, "wb").write(open(SuperMarioMaker2+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()) #==== Create File ====#
                     else:
-                        Replacements.append([file_name, new_archive.get_file_data(file_name)]) #==== Append The File's Name And Data To The Replacements List ====#
+                        pass
 
-                if not os.path.exists(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]):
-                    os.makedirs(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):])
-                else:
-                    pass
-                if not os.path.exists(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file):
-                    open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file, "wb").write(open(SuperMarioMaker2+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())
-                else:
-                    pass
-
-                if (SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file).endswith(".zs"): #==== Check If The Output File Is A Zstandard Compressed SARC Archive File ====#
-                    output_archive = sarc.SARC(zstandard.decompress(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()))
-                elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] == ".szs": #==== Check If The Output File Is A Yaz0 Compressed SARC Archive File ====#
-                    output_archive = sarc.SARC(libyaz0.decompress(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()))
-                elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] in [".sarc", ".pack", ".arc"]: #==== Check If File Is Still A Valid SARC Arhive File ====#::
-                    output_archive = sarc.SARC(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())
-                else:
-                    print(False)
-
-                for Replacement in Replacements:
-                    if os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] == ".zs": #==== Check Again If The File Is A Zstandard Compressed SARC Archive File ====#
-                        output_data = sarc.SARC(zstandard.decompress(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()))
-                    elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] == ".szs": #==== Check Again If The File Is A Yaz0 Compressed SARC Archive File ====#
-                        output_data = sarc.SARC(libyaz0.decompress(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()))
-                    elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] in [".sarc", ".pack", ".arc"]: #==== Check If File Is Still A Valid SARC Arhive File ====#::
-                        output_data = sarc.SARC(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())
+                    if (SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file).endswith(".zs"): #==== Check If The Output File Is A Zstandard Compressed SARC Archive File ====#
+                        output_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                        output_archive.load(zstandard.decompress(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()))
+                    elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] == ".szs": #==== Check If The Output File Is A Yaz0 Compressed SARC Archive File ====#
+                        output_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                        output_archive.load(libyaz0.decompress(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()))
+                    elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] in [".sarc", ".pack", ".arc"]: #==== Check If File Is Still A Valid SARC Archive File ====#::
+                        output_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                        output_archive.load(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())
                     else:
                         print(False)
-                    writer = sarc.make_writer_from_sarc(output_data)
-                    writer.add_file(Replacement[0], Replacement[1])
 
-                if os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] == ".zs": #==== Check One More Time If The File Is A Zstandard Compressed SARC Archive File ====#
-                    open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file,"wb").write(zstandard.compress(writer.get_bytes()))
-                elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] == ".szs": #==== Check One More Time If The File Is A Yaz0 Compressed SARC Archive File ====#
-                    open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file,"wb").write(libyaz0.compress(writer.get_bytes(), level=3))
-                elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] in [".sarc", ".pack", ".arc"]: #==== Check If File Is Still A Valid SARC Arhive File ====#:
-                    open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file,"wb").write(writer.get_bytes())
+                    for Replacement in Replacements:
+                        if os.path.split(Replacement[0])[0]:
+                            output_archive[os.path.split(Replacement[0])[0]].removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                        else:
+                            output_archive.removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                        output_archive.addFile(SarcLib.File(Replacement[0], Replacement[1], True)) #==== Add File(s) To Archive ====#
+
+                    data, maxAlignment = output_archive.save() #==== Save The Archive To A Bytes Object That Can Be Saved To A File ====#
+
+                    if os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] == ".zs": #==== Check If The File Is A Zstandard Compressed SARC Archive File ====#
+                        open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file,"wb").write(zstandard.compress(data))
+                    elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] == ".szs": #==== Check If The File Is A Yaz0 Compressed SARC Archive File ====#
+                        open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file,"wb").write(libyaz0.compress(data, maxAlignment, level=3))
+                    elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] in [".sarc", ".pack", ".arc"]: #==== Check If File Is Still A Valid SARC Archive File ====#:
+                        open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file,"wb").write(data)
+                    else:
+                        print(False)
+
                 else:
-                    print(False)
+                    if not os.path.exists(SuperMarioMaker2ModMergerOutput+file_path):
+                        open(SuperMarioMaker2ModMergerOutput+file_path, 'wb').write(open(SuperMarioMaker2Mod+file_path, 'rb').read())
+                    else:
+                        Replacements = []
+                        file = SuperMarioMaker2Mod+file_path
+                        if file.endswith(".zs"): #==== Check If The File Is A Zstandard Compressed SARC Archive File ====#
+                            old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                            old_archive.load(zstandard.decompress(open(SuperMarioMaker2ModMergerOutput+file_path, 'rb').read())) #==== Read/Decompress zstandard SARC Archive File And Use It To Create New SarcLib.FileArchive.SARC_Archive Object ====#
+                            _new_archive_ = sarc.SARC(zstandard.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())) #==== Read/Decompress zstandard SARC Archive File And Use It To Create New sarc.sarc.SARC Object ====#
+                            new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                            new_archive.load(zstandard.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())) #==== Read/Decompress zstandard SARC Archive File And Use It To Create New SarcLib.FileArchive.SARC_Archive Object ====#
+                        elif file.endswith(".szs"): #==== Check If The File Is A Yaz0 Compressed SARC Archive File ====#
+                            old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                            old_archive.load(libyaz0.decompress(open(SuperMarioMaker2ModMergerOutput+file_path, 'rb').read())) #==== Read/Decompress YAZ0 SARC Archive File And Use It To Create New SarcLib.FileArchive.SARC_Archive Object ====#
+                            _new_archive_ = sarc.SARC(libyaz0.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()))
+                            new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                            new_archive.load(libyaz0.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read())) #==== Read/Decompress YAZ0 SARC Archive File And Use It To Create New SarcLib.FileArchive.SARC_Archive Object ====#
+                        else:
+                            if os.path.splitext(file) in [".sarc", ".pack", ".arc"]: #==== Check If File Is Still A Valid SARC Archive File ====#
+                                old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                                old_archive.load(open(SuperMarioMaker2ModMergerOutput+file_path, 'rb').read()) #==== Read SARC Archive File And Use It To Create New SarcLib.FileArchive.SARC_Archive Object ====#
+                                _new_archive_ = sarc.SARC(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()) #==== Read SARC Archive File And Use It To Create New sarc.SARC Object ====#
+                                new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive Object ====#
+                                new_archive.load(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+"\\"+file, "rb").read()) #==== Read SARC Archive File And Use It To Create New SarcLib.FileArchive.SARC_Archive Object ====#
+                            else:
+                                open(SuperMarioMaker2ModMergerOutput+file_path, 'rb').write(open(SuperMarioMaker2Mod+file_path, 'rb').read())
+
+                        for file_name in _new_archive_.list_files(): #==== Compare Data For Each File Inside The Archive
+                            print(pathlib.PurePath(file_name))
+
+                        if old_archive[file_name].data == new_archive[file_name].data: #==== Compare The New Archive's File's Data To The Original Archive's File's Data ====#
+                            pass
+                        else:
+                            Replacements.append([file_name, new_archive[file_name].data]) #==== Append The File's Name And Data To The Replacements List For Later Use====#
+
+                        for Replacement in Replacements:
+                            if os.path.split(Replacement[0])[0]:
+                                output_archive[os.path.split(Replacement[0])[0]].removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                            else:
+                                output_archive.removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                        output_archive.addFile(SarcLib.File(Replacement[0], Replacement[1], True)) #==== Add File(s) To Archive ====#
+
+                        data, maxAlignment = output_archive.save() #==== Save The Archive To A Bytes Object That Can Be Saved To A File ====#
+
+                        if os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] == ".zs": #==== Check If The File Is A Zstandard Compressed SARC Archive File ====#
+                            open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file,"wb").write(zstandard.compress(data))
+                        elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] == ".szs": #==== Check If The File Is A Yaz0 Compressed SARC Archive File ====#
+                            open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file,"wb").write(libyaz0.compress(data, maxAlignment, level=3))
+                        elif os.path.splitext(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file)[1] in [".sarc", ".pack", ".arc"]: #==== Check If File Is Still A Valid SARC Archive File ====#:
+                            open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+"\\"+file,"wb").write(data)
+                        else:
+                            print(False)
 
     print("All Super Mario Maker 2 Mods Successfully Merged...")
-if __name__ == "__main__":main()
+
+if __name__ == "__main__": main()
