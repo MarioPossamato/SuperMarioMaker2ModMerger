@@ -158,9 +158,15 @@ def main():
 
                     for Replacement in Replacements:
                         if os.path.split(Replacement[0])[0]:
-                            output_archive[os.path.split(Replacement[0])[0]].removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                            try:
+                                output_archive[os.path.split(Replacement[0])[0]].removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                            except:
+                                print(False)
                         else:
-                            output_archive.removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                            try:
+                                output_archive.removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                            except:
+                                print(False)
                         output_archive.addFile(SarcLib.File(Replacement[0], Replacement[1], True)) #==== Add File(s) To Archive ====#
 
                     data, maxAlignment = output_archive.save() #==== Save The Archive To A Bytes Object That Can Be Saved To A File ====#
@@ -212,9 +218,15 @@ def main():
 
                         for Replacement in Replacements:
                             if os.path.split(Replacement[0])[0]:
-                                output_archive[os.path.split(Replacement[0])[0]].removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                                try:
+                                    output_archive[os.path.split(Replacement[0])[0]].removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                                except:
+                                    print(False)
                             else:
-                                output_archive.removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                                try:
+                                    output_archive.removeFile(output_archive[Replacement[0]]) #==== Remove File(s) From Archive ====#
+                                except:
+                                    print(False)
                         output_archive.addFile(SarcLib.File(Replacement[0], Replacement[1], True)) #==== Add File(s) To Archive ====#
 
                         data, maxAlignment = output_archive.save() #==== Save The Archive To A Bytes Object That Can Be Saved To A File ====#
