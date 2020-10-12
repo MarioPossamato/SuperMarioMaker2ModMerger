@@ -70,8 +70,8 @@ SMM2MM_Version = 0.2
 SuperMarioMaker2 = 'SuperMarioMaker2'
 SuperMarioMaker2ModMergerOutput = 'SuperMarioMaker2ModMergerOutput'
 SuperMarioMaker2Mods = [ #==== Mods to merge ====#
-        'SuperMarioMaker2Mods\\SuperMarioMaker2ModExample1', #==== Kuribo (Goomba) action_basic changed to KutsuKuribo (Shoe Goomba) ====#
-        'SuperMarioMaker2Mods\\SuperMarioMaker2ModExample2'  #==== M1_DV_Plain, M1_Field_Plain (M1 Overworld Background, Tileset) changed to MW_DV_Plain, MW_Field_Plain (MW Overworld Background, Tileset) ====#
+        'SuperMarioMaker2Mods\\SuperMarioMaker2ModExample1',
+        'SuperMarioMaker2Mods\\SuperMarioMaker2ModExample2'
         #==== More mods here ====#
         # 'SuperMarioMaker2Mods\\SuperMarioMaker2ModExample3',
         # 'SuperMarioMaker2Mods\\SuperMarioMaker2ModExample4',
@@ -81,7 +81,7 @@ SuperMarioMaker2Mods = [ #==== Mods to merge ====#
 #====================================#
 def merge(): #==== Main function ====#
 
-    print('Merging Super Mario Maker 2 Mods, Please Wait...')
+    print('Merging Super Mario Maker 2 Mods, Please Wait... ☺')
 
     _M1_Replacements_ = [] #==== Create a list object ====#
     _M3_Replacements_ = [] #==== Create a list object ====#
