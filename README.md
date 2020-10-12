@@ -39,3 +39,22 @@ SuperMarioMaker2ModMerger
              └───WordList
 ```
 Also, merging multiple SMM2 mods may take a while, so please be patient! :)
+
+# Using this tool
+- Open `SuperMarioMaker2ModMerger.py` in a text editor, such as Notepad or Notepad++;  
+- Scroll down until you see the `SuperMarioMaker2Mods` variable definition;  
+- Add the mods you want, remove the ones you don't, then hit save;  
+- Run `SuperMarioMaker2ModMerger.bat` to merge them.
+
+# Reporting errors
+Open a new issue [here](https://github.com/MarioPossamato/SuperMarioMaker2ModMerger/issues).  Please include the traceback, as well as links to the mods used:
+```
+Traceback (most recent call last):
+  File "<pyshell#0>", line 1, in <module>
+    raise Exception('An error occurred!')
+Exception: An error occurred!
+
+https://gamebanana.com/gamefiles/12668
+https://gamebanana.com/gamefiles/10747
+```
+You can also send me a message on Discord `MarioPossamato#9693` with the traceback as well as links to the mods used.
