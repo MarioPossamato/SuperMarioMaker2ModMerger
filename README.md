@@ -58,3 +58,9 @@ https://gamebanana.com/gamefiles/12668
 https://gamebanana.com/gamefiles/10747
 ```
 You can also send me a message on Discord `MarioPossamato#9693` with the traceback as well as links to the mods used.
+
+# Is SuperMarioMaker2ModMerger finished?
+No.
+
+# Where can I discuss development of SuperMarioMaker2ModMerger?
+You can chat about development of SMM2MM either in [my Discord server](https://discord.gg/8wx8uQF) or in [the Super Mario Maker 2 Deluxe Discord server](https://discord.gg/WhgdAMy).
