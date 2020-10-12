@@ -63,4 +63,4 @@ You can also send me a message on Discord `MarioPossamato#9693` with the traceba
 No.
 
 # Where can I discuss development of SuperMarioMaker2ModMerger?
-You can chat about development of SMM2MM either in [my Discord server](https://discord.gg/8wx8uQF) or in [the Super Mario Maker 2 Deluxe Discord server](https://discord.gg/WhgdAMy).
+You can chat about development of SuperMarioMaker2ModMerger either in [my Discord server](https://discord.gg/8wx8uQF) or in [the Super Mario Maker 2 Deluxe Discord server](https://discord.gg/WhgdAMy).
