@@ -88,15 +88,16 @@ def exists(sarc, filename):
 #====================================#
 def merge(): #==== Main function ====#
 
-    print('Merging Super Mario Maker 2 Mods, Please Wait... ☺')
+    print('Merging Super Mario Maker 2 Mods, Please Wait...')
 
-    _M1_Replacements_ = [] #==== Create a list object ====#
-    _M3_Replacements_ = [] #==== Create a list object ====#
-    _MW_Replacements_ = [] #==== Create a list object ====#
-    _WU_Replacements_ = [] #==== Create a list object ====#
-    _3W_Replacements_ = [] #==== Create a list object ====#
-    _EnemyDB_game_Replacements_ = [] #==== Create a list object ====#
-    _EditDB_common_Replacements_ = [] #==== Create a list object ====#
+    Pack = {} #==== Create a dict object ====#
+    Pack['M1'] = []
+    Pack['M3'] = []
+    Pack['MW'] = []
+    Pack['WU'] = []
+    Pack['3W'] = []
+    Pack['Enemy'] = []
+    Pack['Edit'] = []
 
     for SuperMarioMaker2Mod in SuperMarioMaker2Mods: #==== Loop for each mod ====#
         for path, subdirs, files in os.walk(SuperMarioMaker2Mod):
@@ -107,14 +108,14 @@ def merge(): #==== Main function ====#
                     print(SuperMarioMaker2Mod+file_path)
     
                     #==== Original archive ====#
-                    original_archive_path = SuperMarioMaker2+file_path
-                    if original_archive_path.endswith('.zs'): #==== Check if the original file is a zstandard compressed sarc archive file ====#
+                    originalarcpath = SuperMarioMaker2+file_path
+                    if originalarcpath.endswith('.zs'): #==== Check if the original file is a zstandard compressed sarc archive file ====#
                         old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                         old_archive.load(zstandard.decompress(open(SuperMarioMaker2+file_path, 'rb').read())) #==== Read/decompress original file and load it ====#
-                    elif original_archive_path.endswith('.szs'): #==== Check if the original file is a yaz0 compressed sarc archive file ====#
+                    elif originalarcpath.endswith('.szs'): #==== Check if the original file is a yaz0 compressed sarc archive file ====#
                         old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                         old_archive.load(libyaz0.decompress(open(SuperMarioMaker2+file_path, 'rb').read())) #==== Read/decompress original file and load it ====#
-                    elif os.path.splitext(original_archive_path)[1] in ['.sarc', '.pack', '.arc']: #==== Check if the file extension is that of an uncompressed sarc archive ====#
+                    elif os.path.splitext(originalarcpath)[1] in ['.sarc', '.pack', '.arc']: #==== Check if the file extension is that of an uncompressed sarc archive ====#
                         old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                         old_archive.load(open(SuperMarioMaker2+file_path, 'rb').read()) #==== Read original file and load it ====#
                     else:
@@ -126,16 +127,16 @@ def merge(): #==== Main function ====#
 
                     #==== New archive ====#
                     if file.endswith('.zs'): #==== Check if the original file is a zstandard compressed sarc archive file ====#
-                        _new_archive_ = sarc.SARC(zstandard.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+file, 'rb').read())) #==== Create sarc.sarc.SARC object.  This is later used for _new_archive_.list_files() ====#
+                        _newarc = sarc.SARC(zstandard.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+file, 'rb').read())) #==== Create sarc.sarc.SARC object.  This is later used for _newarc.list_files() ====#
                         new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                         new_archive.load(zstandard.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+file, 'rb').read())) #==== Read/decompress new file and load it ====#
                     elif file.endswith('.szs'): #==== Check if the original file is a yaz0 compressed sarc archive file ====#
-                        _new_archive_ = sarc.SARC(libyaz0.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+file, 'rb').read())) #==== Create sarc.sarc.SARC object ====#
+                        _newarc = sarc.SARC(libyaz0.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+file, 'rb').read())) #==== Create sarc.sarc.SARC object ====#
                         new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                         new_archive.load(libyaz0.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+file, 'rb').read())) #==== Read/decompress new file and load it ====#
                     else:
                         if os.path.splitext(file)[1] in ['.sarc', '.pack', '.arc']: #==== Check if the file extension is that of an uncompressed sarc archive ====#
-                            _new_archive_ = sarc.SARC(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+file, 'rb').read()) #==== Create sarc.sarc.SARC object.  This is later used for _new_archive_.list_files() ====#
+                            _newarc = sarc.SARC(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+file, 'rb').read()) #==== Create sarc.sarc.SARC object.  This is later used for _newarc.list_files() ====#
                             new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                             new_archive.load(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+file, 'rb').read()) #==== Read new file and load it ====#
                         else:
@@ -154,9 +155,9 @@ def merge(): #==== Main function ====#
                                 if dict(list(info['M1_new_info'])[i]) == dict(list(info['M1_old_info'])[i]): #==== Check if both items are equal or not ====#
                                     pass
                                 else:
-                                    _M1_Replacements_.append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                    Pack['M1'].append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                             except:
-                                _M1_Replacements_.append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                Pack['M1'].append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                         #==== M3 ====#
                         if exists(old_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
@@ -168,9 +169,9 @@ def merge(): #==== Main function ====#
                                     if dict(list(info['M3_new_info'])[i]) == dict(list(info['M3_old_info'])[i]): #==== Check if both items are equal or not ====#
                                         pass
                                     else:
-                                        _M3_Replacements_.append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['M3'].append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                 except:
-                                    _M3_Replacements_.append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                    Pack['M3'].append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                         #==== MW ====#
                         if exists(old_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
@@ -182,9 +183,9 @@ def merge(): #==== Main function ====#
                                     if dict(list(info['MW_new_info'])[i]) == dict(list(info['MW_old_info'])[i]): #==== Check if both items are equal or not ====#
                                         pass
                                     else:
-                                        _MW_Replacements_.append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['MW'].append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                 except:
-                                    _MW_Replacements_.append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                    Pack['MW'].append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                         #==== WU ====#
                         if exists(old_archive, 'Mush\\MW_SceneDB.byml'): #==== Check if file exists ====#
@@ -196,9 +197,9 @@ def merge(): #==== Main function ====#
                                     if dict(list(info['WU_new_info'])[i]) == dict(list(info['WU_old_info'])[i]): #==== Check if both items are equal or not ====#
                                         pass
                                     else:
-                                        _WU_Replacements_.append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['WU'].append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                 except:
-                                    _WU_Replacements_.append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                    Pack['WU'].append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                         #==== 3W ====#
                         if exists(old_archive, 'Mush\\WU_SceneDB.byml'): #==== Check if file exists ====#
@@ -210,9 +211,9 @@ def merge(): #==== Main function ====#
                                     if dict(list(info['3W_new_info'])[i]) == dict(list(info['3W_old_info'])[i]): #==== Check if both items are equal or not ====#
                                         pass
                                     else:
-                                        _3W_Replacements_.append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['3W'].append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                 except:
-                                    _3W_Replacements_.append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                    Pack['3W'].append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                         #==== EnemyDB_game ====#
                         if exists(old_archive, 'Mush\\EnemyDB_game.byml'): #==== Check if file exists ====#
@@ -224,9 +225,9 @@ def merge(): #==== Main function ====#
                                     if dict(list(info['EnemyDB_game_new_info'])[i]) == dict(list(info['EnemyDB_game_old_info'])[i]): #==== Check if both items are equal or not ====#
                                         pass
                                     else:
-                                        _EditDB_common_Replacements_.append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['Enemy'].append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                 except:
-                                    _EditDB_common_Replacements_.append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                    Pack['Enemy'].append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                         #==== EditDB_common ====#
                         if exists(old_archive, 'Mush\\EditDB_common.byml'): #==== Check if file exists ====#
@@ -238,14 +239,14 @@ def merge(): #==== Main function ====#
                                     if dict(list(info['EditDB_common_new_info'])[i]) == dict(list(info['EditDB_common_old_info'])[i]): #==== Check if both items are equal or not ====#
                                         pass
                                     else:
-                                        _EditDB_common_Replacements_.append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['Edit'].append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                 except:
-                                    _EditDB_common_Replacements_.append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                    Pack['Edit'].append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
-                            for file_name in _new_archive_.list_files(): #==== Loop for each file inside the archive ====#
+                            for file_name in _newarc.list_files(): #==== Loop for each file inside the archive ====#
                                 print(pathlib.PurePath(file_name))
                         else:
-                            for file_name in _new_archive_.list_files(): #==== Loop for each file inside the archive ====#
+                            for file_name in _newarc.list_files(): #==== Loop for each file inside the archive ====#
                                 print(pathlib.PurePath(file_name))
 
                                 if old_archive[file_name].data == new_archive[file_name].data: #==== Compare the data of the file in the new archive to that of the file in the old archive ====#
@@ -311,20 +312,20 @@ def merge(): #==== Main function ====#
                         if file.endswith('.zs'): #==== Check if the file is a zstandard compressed sarc archive file ====#
                             old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                             old_archive.load(zstandard.decompress(open(SuperMarioMaker2ModMergerOutput+file_path, 'rb').read())) #==== Read/decompress new file and load it ====#
-                            _new_archive_ = sarc.SARC(zstandard.decompress(open(SuperMarioMaker2Mod+file_path, 'rb').read())) #==== Create sarc.sarc.SARC object.  This is later used for _new_archive_.list_files() ====#
+                            _newarc = sarc.SARC(zstandard.decompress(open(SuperMarioMaker2Mod+file_path, 'rb').read())) #==== Create sarc.sarc.SARC object.  This is later used for _newarc.list_files() ====#
                             new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                             new_archive.load(zstandard.decompress(open(SuperMarioMaker2Mod+file_path, 'rb').read())) #==== Read/decompress new file and load it ====#
                         elif file.endswith('.szs'): #==== Check if the original file is a yaz0 compressed sarc archive file ====#
                             old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                             old_archive.load(libyaz0.decompress(open(SuperMarioMaker2ModMergerOutput+file_path, 'rb').read())) #==== Read/decompress new file and load it ====#
-                            _new_archive_ = sarc.SARC(libyaz0.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+SuperMarioMaker2Mod+file_path, 'rb').read()))
+                            _newarc = sarc.SARC(libyaz0.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+SuperMarioMaker2Mod+file_path, 'rb').read()))
                             new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                             new_archive.load(libyaz0.decompress(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+SuperMarioMaker2Mod+file_path, 'rb').read())) #==== Read/decompress new file and load it ====#
                         else:
                             if os.path.splitext(file) in ['.sarc', '.pack', '.arc']: #==== Check if the file extension is that of an uncompressed sarc archive ====#
                                 old_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                                 old_archive.load(open(SuperMarioMaker2ModMergerOutput+file_path, 'rb').read()) #==== Create SarcLib.FileArchive.SARC_Archive object ====#
-                                _new_archive_ = sarc.SARC(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+SuperMarioMaker2Mod+file_path, 'rb').read()) #==== Create sarc.sarc.SARC object.  This is later used for _new_archive_.list_files() ====#
+                                _newarc = sarc.SARC(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+SuperMarioMaker2Mod+file_path, 'rb').read()) #==== Create sarc.sarc.SARC object.  This is later used for _newarc.list_files() ====#
                                 new_archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
                                 new_archive.load(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\'+SuperMarioMaker2Mod+file_path, 'rb').read()) #==== Read new file and load it ====#
                             else:
@@ -344,9 +345,9 @@ def merge(): #==== Main function ====#
                                     if dict(list(info['M1_new_info'])[i]) == dict(list(info['M1_old_info'])[i]): #==== Check if both items are equal or not ====#
                                         pass
                                     else:
-                                        _M1_Replacements_.append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['M1'].append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                 except:
-                                    _M1_Replacements_.append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                    Pack['M1'].append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                             #==== M3 ====#
                             if exists(old_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
@@ -358,9 +359,9 @@ def merge(): #==== Main function ====#
                                         if dict(list(info['M3_new_info'])[i]) == dict(list(info['M3_old_info'])[i]): #==== Check if both items are equal or not ====#
                                             pass
                                         else:
-                                            _M3_Replacements_.append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                            Pack['M3'].append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                     except:
-                                        _M3_Replacements_.append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['M3'].append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                             #==== MW ====#
                             if exists(old_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
@@ -372,9 +373,9 @@ def merge(): #==== Main function ====#
                                         if dict(list(info['MW_new_info'])[i]) == dict(list(info['MW_old_info'])[i]): #==== Check if both items are equal or not ====#
                                             pass
                                         else:
-                                            _MW_Replacements_.append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                            Pack['MW'].append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                     except:
-                                        _MW_Replacements_.append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['MW'].append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                             #==== WU ====#
                             if exists(old_archive, 'Mush\\MW_SceneDB.byml'): #==== Check if file exists ====#
@@ -386,9 +387,9 @@ def merge(): #==== Main function ====#
                                         if dict(list(info['WU_new_info'])[i]) == dict(list(info['WU_old_info'])[i]): #==== Check if both items are equal or not ====#
                                             pass
                                         else:
-                                            _WU_Replacements_.append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                            Pack['WU'].append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                     except:
-                                        _WU_Replacements_.append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['WU'].append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                             #==== 3W ====#
                             if exists(old_archive, 'Mush\\WU_SceneDB.byml'): #==== Check if file exists ====#
@@ -400,9 +401,9 @@ def merge(): #==== Main function ====#
                                         if dict(list(info['3W_new_info'])[i]) == dict(list(info['3W_old_info'])[i]): #==== Check if both items are equal or not ====#
                                             pass
                                         else:
-                                            _3W_Replacements_.append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                            Pack['3W'].append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                     except:
-                                        _3W_Replacements_.append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['3W'].append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                             #==== EnemyDB_game ====#
                             if exists(old_archive, 'Mush\\EnemyDB_game.byml'): #==== Check if file exists ====#
@@ -414,9 +415,9 @@ def merge(): #==== Main function ====#
                                         if dict(list(info['EnemyDB_game_new_info'])[i]) == dict(list(info['EnemyDB_game_old_info'])[i]): #==== Check if both items are equal or not ====#
                                             pass
                                         else:
-                                            _EditDB_common_Replacements_.append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                            Pack['Enemy'].append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                     except:
-                                        _EditDB_common_Replacements_.append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['Enemy'].append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
                             #==== EditDB_common ====#
                             if exists(old_archive, 'Mush\\EditDB_common.byml'): #==== Check if file exists ====#
@@ -428,14 +429,14 @@ def merge(): #==== Main function ====#
                                         if dict(list(info['EditDB_common_new_info'])[i]) == dict(list(info['EditDB_common_old_info'])[i]): #==== Check if both items are equal or not ====#
                                             pass
                                         else:
-                                            _EditDB_common_Replacements_.append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                            Pack['Edit'].append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
                                     except:
-                                        _EditDB_common_Replacements_.append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        Pack['Edit'].append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the 'Pack' dict object ====#
 
-                                for file_name in _new_archive_.list_files(): #==== Loop for each file inside the archive ====#
+                                for file_name in _newarc.list_files(): #==== Loop for each file inside the archive ====#
                                     print(pathlib.PurePath(file_name))
                             else:
-                                for file_name in _new_archive_.list_files(): #==== Loop for each file inside the archive ====#
+                                for file_name in _newarc.list_files(): #==== Loop for each file inside the archive ====#
                                     print(pathlib.PurePath(file_name))
 
                                     if old_archive[file_name].data == new_archive[file_name].data: #==== Compare the data of the file in the new archive to that of the file in the old archive ====#
@@ -485,109 +486,109 @@ def merge(): #==== Main function ====#
     if not os.path.exists(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack'): #==== Check if file exists ====#
         os.makedirs(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):], mode=511, exist_ok=True) #==== Create directories ====#
         open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\'+file, 'wb').write(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', "rb").read()) #==== Create file ====#
-        _archive_ = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
-        _archive_.load(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'rb').read()) #==== Read new file and load it ====#
+        arc = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
+        arc.load(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'rb').read()) #==== Read new file and load it ====#
     else:
-        _archive_ = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
-        _archive_.load(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'rb').read()) #==== Read new file and load it ====#
+        arc = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
+        arc.load(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'rb').read()) #==== Read new file and load it ====#
 
     info = {} #==== Create dict object ====#
 
     #==== M1 ====#
-    if exists(_archive, 'Mush\\M1_SceneDB.byml'): #==== Check if file exists ====#
-        info['M1_new_info'] = oead.byml.from_binary(_archive['Mush\\M1_SceneDB.byml'].data)
-        for _M1_Replacement_ in _M1_Replacements_:
-            info['M1_new_info'][_M1_Replacement_[0]] = _M1_Replacement_[1]
+    if exists(arc, 'Mush\\M1_SceneDB.byml'): #==== Check if file exists ====#
+        info['M1_new_info'] = oead.byml.from_binary(arc['Mush\\M1_SceneDB.byml'].data)
+        for r in Pack['M1']:
+            info['M1_new_info'][Pack['M1'][0]] = Pack['M1'][1]
 
     #==== M3 ====#
-    if exists(_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
-        info['M3_new_info'] = oead.byml.from_binary(_archive['Mush\\M3_SceneDB.byml'].data)
-        for _M3_Replacement_ in _M3_Replacements_:
-            info['M3_new_info'][_M3_Replacement_[0]] = _M3_Replacement_[1]
+    if exists(arc, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+        info['M3_new_info'] = oead.byml.from_binary(arc['Mush\\M3_SceneDB.byml'].data)
+        for r in Pack['M3']:
+            info['M3_new_info'][Pack['M3'][0]] = Pack['M3'][1]
 
     #==== MW ====#
-    if exists(_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
-        info['MW_new_info'] = oead.byml.from_binary(_archive['Mush\\MW_SceneDB.byml'].data)
-        for _MW_Replacement_ in _MW_Replacements_:
-            info['MW_new_info'][_MW_Replacement_[0]] = _MW_Replacement_[1]
+    if exists(arc, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+        info['MW_new_info'] = oead.byml.from_binary(arc['Mush\\MW_SceneDB.byml'].data)
+        for r in Pack['MW']:
+            info['MW_new_info'][Pack['MW'][0]] = Pack['MW'][1]
 
     #==== WU ====#
-    if exists(_archive, 'Mush\\MW_SceneDB.byml'): #==== Check if file exists ====#
-        info['WU_new_info'] = oead.byml.from_binary(_archive['Mush\\WU_SceneDB.byml'].data)
-        for _WU_Replacement_ in _WU_Replacements_:
-            info['WU_new_info'][_WU_Replacement_[0]] = _WU_Replacement_[1]
+    if exists(arc, 'Mush\\MW_SceneDB.byml'): #==== Check if file exists ====#
+        info['WU_new_info'] = oead.byml.from_binary(arc['Mush\\WU_SceneDB.byml'].data)
+        for r in Pack['WU']:
+            info['WU_new_info'][Pack['WU'][0]] = Pack['WU'][1]
 
     #==== 3W ====#
-    if exists(_archive, 'Mush\\WU_SceneDB.byml'): #==== Check if file exists ====#
-        info['3W_new_info'] = oead.byml.from_binary(_archive['Mush\\3W_SceneDB.byml'].data)
-        for _3W_Replacement_ in _3W_Replacements_:
-            info['3W_new_info'][_3W_Replacement_[0]] = _3W_Replacement_[1]
+    if exists(arc, 'Mush\\WU_SceneDB.byml'): #==== Check if file exists ====#
+        info['3W_new_info'] = oead.byml.from_binary(arc['Mush\\3W_SceneDB.byml'].data)
+        for r in Pack['3W']:
+            info['3W_new_info'][Pack['3W'][0]] = Pack['3W'][1]
 
     #==== EnemyDB_game ====#
-    if exists(_archive, 'Mush\\EnemyDB_game.byml'): #==== Check if file exists ====#
-        info['EnemyDB_game_new_info'] = oead.byml.from_binary(_archive['Mush\\EnemyDB_game.byml'].data)
-        for _EnemyDB_game_Replacement_ in _EnemyDB_game_Replacements_:
-            info['EnemyDB_game_new_info'][_EnemyDB_game_Replacement_[0]] = _EnemyDB_game_Replacement_[1]
+    if exists(arc, 'Mush\\EnemyDB_game.byml'): #==== Check if file exists ====#
+        info['EnemyDB_game_new_info'] = oead.byml.from_binary(arc['Mush\\EnemyDB_game.byml'].data)
+        for r in Pack['Enemy']:
+            info['EnemyDB_game_new_info'][Pack['Enemy'][0]] = Pack['Enemy'][1]
 
     #==== EditDB_common ====#
-    if exists(_archive, 'Mush\\EditDB_common.byml'): #==== Check if file exists ====#
-        info['EditDB_common_new_info'] = oead.byml.from_binary(_archive['Mush\\EditDB_common.byml'].data)
-        for _EditDB_common_Replacement_ in _EditDB_common_Replacements_:
-            info['EditDB_common_new_info'][_EditDB_common_Replacement_[0]] = _EditDB_common_Replacement_[1]
+    if exists(arc, 'Mush\\EditDB_common.byml'): #==== Check if file exists ====#
+        info['EditDB_common_new_info'] = oead.byml.from_binary(arc['Mush\\EditDB_common.byml'].data)
+        for r in Pack['Edit']:
+            info['EditDB_common_new_info'][Pack['Edit'][0]] = Pack['Edit'][1]
 
     yaml_util.add_constructors(yaml.CLoader)
 
     #==== M1 ====#
-    _M1_text_ = oead.byml.to_text(info['M1_new_info'])
-    _M1_text_ = yaml.load(_M1_text_, Loader=yaml.CLoader)
-    _M1_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
-    byml.Writer(_M1_text_).write(_M1_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
+    text_M1 = oead.byml.to_text(info['M1_new_info'])
+    text_M1 = yaml.load(text_M1, Loader=yaml.CLoader)
+    buf_M1 = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(text_M1).write(buf_M1) #==== Convert to byml and write to _io.BytesIO object ====#
 
     #==== M3 ====#
-    _M3_text_ = oead.byml.to_text(info['M3_new_info'])
-    _M3_text_ = yaml.load(_M3_text_, Loader=yaml.CLoader)
-    _M3_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
-    byml.Writer(_M3_text_).write(_M3_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
+    text_M3 = oead.byml.to_text(info['M3_new_info'])
+    text_M3 = yaml.load(text_M3, Loader=yaml.CLoader)
+    buf_M3 = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(text_M3).write(buf_M3) #==== Convert to byml and write to _io.BytesIO object ====#
 
     #==== MW ====#
-    _MW_text_ = oead.byml.to_text(info['MW_new_info'])
-    _MW_text_ = yaml.load(_MW_text_, Loader=yaml.CLoader)
-    _MW_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
-    byml.Writer(_MW_text_).write(_MW_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
+    text_MW = oead.byml.to_text(info['MW_new_info'])
+    text_MW = yaml.load(text_MW, Loader=yaml.CLoader)
+    buf_MW = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(text_MW).write(buf_MW) #==== Convert to byml and write to _io.BytesIO object ====#
 
     #==== WU ====#
-    _WU_text_ = oead.byml.to_text(info['WU_new_info'])
-    _WU_text_ = yaml.load(_WU_text_, Loader=yaml.CLoader)
-    _WU_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
-    byml.Writer(_WU_text_).write(_WU_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
+    text_WU = oead.byml.to_text(info['WU_new_info'])
+    text_WU = yaml.load(text_WU, Loader=yaml.CLoader)
+    buf_WU = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(text_WU).write(buf_WU) #==== Convert to byml and write to _io.BytesIO object ====#
 
     #==== 3W ====#
-    _3W_text_ = oead.byml.to_text(info['3W_new_info'])
-    _3W_text_ = yaml.load(_3W_text_, Loader=yaml.CLoader)
-    _3W_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
-    byml.Writer(_3W_text_).write(_3W_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
+    text_3W = oead.byml.to_text(info['3W_new_info'])
+    text_3W = yaml.load(text_3W, Loader=yaml.CLoader)
+    buf_3W = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(text_3W).write(buf_3W) #==== Convert to byml and write to _io.BytesIO object ====#
 
     #==== EnemyDB_game ====#
-    _EnemyDB_game_text_ = oead.byml.to_text(info['EnemyDB_game_new_info'])
-    _EnemyDB_game_text_ = yaml.load(_EnemyDB_game_text_, Loader=yaml.CLoader)
-    _EnemyDB_game_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
-    byml.Writer(_EnemyDB_game_text_).write(_EnemyDB_game_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
+    text_Enemy = oead.byml.to_text(info['EnemyDB_game_new_info'])
+    text_Enemy = yaml.load(text_Enemy, Loader=yaml.CLoader)
+    buf_Enemy = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(text_Enemy).write(buf_Enemy) #==== Convert to byml and write to _io.BytesIO object ====#
 
     #==== EditDB_common ====#
-    _EditDB_common_text_ = oead.byml.to_text(info['EditDB_common_new_info'])
-    _EditDB_common_text_ = yaml.load(_EditDB_common_text_, Loader=yaml.CLoader)
-    _EditDB_common_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
-    byml.Writer(_EditDB_common_text_).write(_EditDB_common_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
+    text_Edit = oead.byml.to_text(info['EditDB_common_new_info'])
+    text_Edit = yaml.load(text_Edit, Loader=yaml.CLoader)
+    buf_Edit = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(text_Edit).write(buf_Edit) #==== Convert to byml and write to _io.BytesIO object ====#
 
-    _archive_['Mush/M1_SceneDB.byml'].data = (_M1_buf_.getbuffer()) #==== M1 ====#
-    _archive_['Mush/M3_SceneDB.byml'].data = (_M3_buf_.getbuffer()) #==== M3 ====#
-    _archive_['Mush/MW_SceneDB.byml'].data = (_MW_buf_.getbuffer()) #==== MW ====#
-    _archive_['Mush/WU_SceneDB.byml'].data = (_WU_buf_.getbuffer()) #==== WU ====#
-    _archive_['Mush/3W_SceneDB.byml'].data = (_3W_buf_.getbuffer()) #==== 3W ====#
-    _archive_['Mush/EnemyDB_game.byml'].data = (_EnemyDB_game_buf_.getbuffer()) #==== EnemyDB_game ====#
-    _archive_['Mush/EditDB_common.byml'].data = (_EditDB_common_buf_.getbuffer()) #==== EditDB_common ====#
+    arc['Mush/M1_SceneDB.byml'].data = (buf_M1.getbuffer()) #==== M1 ====#
+    arc['Mush/M3_SceneDB.byml'].data = (buf_M3.getbuffer()) #==== M3 ====#
+    arc['Mush/MW_SceneDB.byml'].data = (buf_MW.getbuffer()) #==== MW ====#
+    arc['Mush/WU_SceneDB.byml'].data = (buf_WU.getbuffer()) #==== WU ====#
+    arc['Mush/3W_SceneDB.byml'].data = (buf_3W.getbuffer()) #==== 3W ====#
+    arc['Mush/EnemyDB_game.byml'].data = (buf_Enemy.getbuffer()) #==== EnemyDB_game ====#
+    arc['Mush/EditDB_common.byml'].data = (buf_Edit.getbuffer()) #==== EditDB_common ====#
 
-    open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'wb').write(_archive.save()[0]) #==== Save to file ====#
+    open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'wb').write(arc.save()[0]) #==== Save to file ====#
 
     print('All Super Mario Maker 2 Mods Successfully Merged...') #==== Let user know that the script has finished merging their mods ====#
 
