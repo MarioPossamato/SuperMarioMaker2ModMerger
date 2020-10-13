@@ -182,6 +182,14 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.DirList.takeItem(Dirs.index(selectedItem.text()))
 
     def MergeDirs(self): #==== Function to merge directories ====#
+        Dirs = []
+        for i in range(self.DirList.count()):
+            Dirs.append(self.DirList.item(i).text())
+        if len(Dirs) == 0:
+            QtWidgets.QMessageBox.warning(None, 'Error', 'The mod list is empty!  Please add some mods to merge.')
+            return #==== No mods were selected ====#
+        else:
+            pass
         SuperMarioMaker2 = self.InDir.text()
         SuperMarioMaker2ModMergerOutput = self.OutDir.text()
         SuperMarioMaker2Mods = []
@@ -690,9 +698,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'wb').write(arc.save()[0]) #==== Save to file ====#
 
-        print('All Super Mario Maker 2 Mods Successfully Merged...')
+        print('All Super Mario Maker 2 Mods successfully merged!')
 
-        QtWidgets.QMessageBox.information(None, 'Success', 'All Super Mario Maker 2 Mods Successfully Merged!')
+        QtWidgets.QMessageBox.information(None, 'Success', 'All Super Mario Maker 2 Mods successfully merged!')
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
