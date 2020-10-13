@@ -40,6 +40,18 @@ SuperMarioMaker2ModMerger
 ```
 Also, merging multiple SMM2 mods may take a while, so please be patient! :)
 
+# Pre-Requisites
+- [SuperMarioMaker2ModMerger](https://github.com/MarioPossamato/SuperMarioMaker2ModMerger/archive/main.zip)
+- [pyyaml](https://github.com/yaml/pyyaml)
+- [python-zstd](https://github.com/sergey-dryabzhinsky/python-zstd)
+- [python-zstandard](https://github.com/indygreg/python-zstandard)
+- [sarc](https://github.com/zeldamods/sarc/)
+- [SarcLib](https://github.com/aboood40091/SarcLib)
+- [libyaz0](https://github.com/aboood40091/libyaz0)
+- [syaz0](https://github.com/zeldamods/syaz0)
+- [byml](https://github.com/zeldamods/byml-v2)
+- [oead](https://github.com/zeldamods/oead)
+
 # Using this tool
 - Open `SuperMarioMaker2ModMerger.py` in a text editor, such as Notepad or Notepad++;  
 - Scroll down until you see the `SuperMarioMaker2Mods` variable definition;  
@@ -64,3 +76,11 @@ No.
 
 # Where can I discuss development of SuperMarioMaker2ModMerger?
 You can chat about development of SuperMarioMaker2ModMerger either in [my Discord server](https://discord.gg/8wx8uQF) or in [the Super Mario Maker 2 Deluxe Discord server](https://discord.gg/WhgdAMy).
+
+# Who gets credit for this tool?
+- [MarioPossamato](https://github.com/MarioPossamato/) for SuperMarioMaker2ModMerger
+- [aboood40091](https://github.com/aboood40091/) for SarcLib and libyaz0
+- [zeldamods](https://github.com/zeldamods/) for sarc, byml, syaz0, and oead
+- [sergey-dryabzhinsky](https://github.com/sergey-dryabzhinsky) for python-zstd
+- [indygreg](https://github.com/indygreg) for python-zstandard
+- [yaml](https://github.com/yaml) for pyyaml
