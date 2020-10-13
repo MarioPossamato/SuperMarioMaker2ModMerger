@@ -53,10 +53,9 @@ Also, merging multiple SMM2 mods may take a while, so please be patient! :)
 - [oead](https://github.com/zeldamods/oead)
 
 # Using this tool
-- Open `SuperMarioMaker2ModMerger.py` in a text editor, such as Notepad or Notepad++;  
-- Scroll down until you see the `SuperMarioMaker2Mods` variable definition;  
-- Add the mods you want, remove the ones you don't, then hit save;  
-- Run `SuperMarioMaker2ModMerger.bat` to merge them.
+- Run `SuperMarioMaker2ModMerger.bat`
+- Click the `Add` button to add a mod to the list
+- Click the `Merge` button to merge selected mods
 
 # Reporting errors
 Open a new issue [here](https://github.com/MarioPossamato/SuperMarioMaker2ModMerger/issues).  Please include the traceback, as well as links to the mods used:
