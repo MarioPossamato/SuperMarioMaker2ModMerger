@@ -83,4 +83,5 @@ You can chat about development of SuperMarioMaker2ModMerger either in [my Discor
 - [zeldamods](https://github.com/zeldamods/) for sarc, byml, syaz0, and oead
 - [sergey-dryabzhinsky](https://github.com/sergey-dryabzhinsky) for python-zstd
 - [indygreg](https://github.com/indygreg) for python-zstandard
-- [yaml](https://github.com/yaml) for pyyaml
+- [yaml](https://github.com/yaml) for pyyaml  
+Also, I want to give a special thanks to [aboood40091](https://github.com/aboood40091/) for explaining to me how a bunch of stuff in SarcLib works, as well as for giving me the `exists` function.
