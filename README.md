@@ -1,5 +1,5 @@
 # SuperMarioMaker2ModMerger
-A Tool For Merging Super Mario Maker 2 Mods
+A Tool For Merging Super Mario Maker 2 Mods  
 Version 0.2
 
 ![preview](https://github.com/MarioPossamato/SuperMarioMaker2ModMerger/blob/main/SuperMarioMaker2ModMergerData/preview.png)
