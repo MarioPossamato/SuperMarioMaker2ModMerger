@@ -79,6 +79,13 @@ SuperMarioMaker2Mods = [ #==== Mods to merge ====#
         # 'SuperMarioMaker2Mods\\SuperMarioMaker2ModExample6'
         ]
 #====================================#
+def exists(sarc, filename):
+    try:
+        sarc[filename]
+    except KeyError:
+        return False
+    return True
+#====================================#
 def merge(): #==== Main function ====#
 
     print('Merging Super Mario Maker 2 Mods, Please Wait... ☺')
@@ -88,6 +95,8 @@ def merge(): #==== Main function ====#
     _MW_Replacements_ = [] #==== Create a list object ====#
     _WU_Replacements_ = [] #==== Create a list object ====#
     _3W_Replacements_ = [] #==== Create a list object ====#
+    _EnemyDB_game_Replacements_ = [] #==== Create a list object ====#
+    _EditDB_common_Replacements_ = [] #==== Create a list object ====#
 
     for SuperMarioMaker2Mod in SuperMarioMaker2Mods: #==== Loop for each mod ====#
         for path, subdirs, files in os.walk(SuperMarioMaker2Mod):
@@ -133,64 +142,97 @@ def merge(): #==== Main function ====#
                             print(False)
 
                     if os.path.split(SuperMarioMaker2Mod+file_path)[1] == 'Static.pack':
-                        info = {
-                                'M1_old_info':oead.byml.from_binary(old_archive['Mush\\M1_SceneDB.byml'].data),
-                                'M1_new_info':oead.byml.from_binary(new_archive['Mush\\M1_SceneDB.byml'].data),
-                                'M3_old_info':oead.byml.from_binary(old_archive['Mush\\M3_SceneDB.byml'].data),
-                                'M3_new_info':oead.byml.from_binary(new_archive['Mush\\M3_SceneDB.byml'].data),
-                                'MW_old_info':oead.byml.from_binary(old_archive['Mush\\MW_SceneDB.byml'].data),
-                                'MW_new_info':oead.byml.from_binary(new_archive['Mush\\MW_SceneDB.byml'].data),
-                                'WU_old_info':oead.byml.from_binary(old_archive['Mush\\WU_SceneDB.byml'].data),
-                                'WU_new_info':oead.byml.from_binary(new_archive['Mush\\WU_SceneDB.byml'].data),
-                                '3W_old_info':oead.byml.from_binary(old_archive['Mush\\3W_SceneDB.byml'].data),
-                                '3W_new_info':oead.byml.from_binary(new_archive['Mush\\3W_SceneDB.byml'].data)
-                            }
-                        if os.path.split(SuperMarioMaker2Mod+file_path)[1] == 'Static.pack':
-                            for i in range(len(list(info['M1_new_info']))): #==== Loop for every item in each list ====#
-                                try:
-                                    if dict(list(info['M1_new_info'])[i]) == dict(list(info['M1_old_info'])[i]): #==== Check if both items are equal or not ====#
-                                        pass
-                                    else:
-                                        _M1_Replacements_.append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
-                                except:
+                        info = {} #==== Create dict object ====#
+                        if exists(old_archive, 'Mush\\M1_SceneDB.byml'): #==== Check if file exists ====#
+                            info['M1_old_info'] = oead.byml.from_binary(old_archive['Mush\\M1_SceneDB.byml'].data)
+                        if exists(new_archive, 'Mush\\M1_SceneDB.byml'): #==== Check if file exists ====#
+                            info['M1_new_info'] = oead.byml.from_binary(new_archive['Mush\\M1_SceneDB.byml'].data)
+                        for i in range(len(list(info['M1_new_info']))): #==== Loop for every item in each list ====#
+                            try:
+                                if dict(list(info['M1_new_info'])[i]) == dict(list(info['M1_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                    pass
+                                else:
                                     _M1_Replacements_.append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                            except:
+                                _M1_Replacements_.append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
 
-                            for i in range(len(list(info['M3_new_info']))): #==== Loop for every item in each list ====#
-                                try:
-                                    if dict(list(info['M3_new_info'])[i]) == dict(list(info['M3_old_info'])[i]): #==== Check if both items are equal or not ====#
-                                        pass
-                                    else:
-                                        _M3_Replacements_.append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
-                                except:
+                        if exists(old_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+                            info['M3_old_info'] = oead.byml.from_binary(old_archive['Mush\\M3_SceneDB.byml'].data)
+                        if exists(new_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+                            info['M3_new_info'] = oead.byml.from_binary(new_archive['Mush\\M3_SceneDB.byml'].data)
+                        for i in range(len(list(info['M3_new_info']))): #==== Loop for every item in each list ====#
+                            try:
+                                if dict(list(info['M3_new_info'])[i]) == dict(list(info['M3_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                    pass
+                                else:
                                     _M3_Replacements_.append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                            except:
+                                _M3_Replacements_.append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
 
-                            for i in range(len(list(info['MW_new_info']))): #==== Loop for every item in each list ====#
-                                try:
-                                    if dict(list(info['MW_new_info'])[i]) == dict(list(info['MW_old_info'])[i]): #==== Check if both items are equal or not ====#
-                                        pass
-                                    else:
-                                        _MW_Replacements_.append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
-                                except:
+                        if exists(old_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+                            info['MW_old_info'] = oead.byml.from_binary(old_archive['Mush\\MW_SceneDB.byml'].data)
+                        if exists(new_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+                            info['MW_new_info'] = oead.byml.from_binary(new_archive['Mush\\MW_SceneDB.byml'].data)
+                        for i in range(len(list(info['MW_new_info']))): #==== Loop for every item in each list ====#
+                            try:
+                                if dict(list(info['MW_new_info'])[i]) == dict(list(info['MW_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                    pass
+                                else:
                                     _MW_Replacements_.append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                            except:
+                                _MW_Replacements_.append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
 
-                            for i in range(len(list(info['WU_new_info']))): #==== Loop for every item in each list ====#
-                                try:
-                                    if dict(list(info['WU_new_info'])[i]) == dict(list(info['WU_old_info'])[i]): #==== Check if both items are equal or not ====#
-                                        pass
-                                    else:
-                                        _WU_Replacements_.append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
-
-                                except:
+                        if exists(old_archive, 'Mush\\MW_SceneDB.byml'): #==== Check if file exists ====#
+                            info['WU_old_info'] = oead.byml.from_binary(old_archive['Mush\\WU_SceneDB.byml'].data)
+                        if exists(new_archive, 'Mush\\MW_SceneDB.byml'): #==== Check if file exists ====#
+                            info['WU_new_info'] = oead.byml.from_binary(new_archive['Mush\\WU_SceneDB.byml'].data)
+                        for i in range(len(list(info['WU_new_info']))): #==== Loop for every item in each list ====#
+                            try:
+                                if dict(list(info['WU_new_info'])[i]) == dict(list(info['WU_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                    pass
+                                else:
                                     _WU_Replacements_.append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                            except:
+                                _WU_Replacements_.append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
 
-                            for i in range(len(list(info['3W_new_info']))): #==== Loop for every item in each list ====#
+                        if exists(old_archive, 'Mush\\WU_SceneDB.byml'): #==== Check if file exists ====#
+                            info['3W_old_info'] = oead.byml.from_binary(old_archive['Mush\\3W_SceneDB.byml'].data)
+                        if exists(new_archive, 'Mush\\WU_SceneDB.byml'): #==== Check if file exists ====#
+                            info['3W_new_info'] = oead.byml.from_binary(new_archive['Mush\\3W_SceneDB.byml'].data)
+                        for i in range(len(list(info['3W_new_info']))): #==== Loop for every item in each list ====#
+                            try:
+                                if dict(list(info['3W_new_info'])[i]) == dict(list(info['3W_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                    pass
+                                else:
+                                    _3W_Replacements_.append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                            except:
+                                _3W_Replacements_.append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+
+                        if exists(old_archive, 'Mush\\EnemyDB_game.byml'): #==== Check if file exists ====#
+                            info['EnemyDB_game_old_info'] = oead.byml.from_binary(old_archive['Mush\\EnemyDB_game.byml'].data)
+                        if exists(new_archive, 'Mush\\EnemyDB_game.byml'): #==== Check if file exists ====#
+                            info['EnemyDB_game_new_info'] = oead.byml.from_binary(new_archive['Mush\\EnemyDB_game.byml'].data)
+                        for i in range(len(list(info['EnemyDB_game_new_info']))): #==== Loop for every item in each list ====#
+                            try:
+                                if dict(list(info['EnemyDB_game_new_info'])[i]) == dict(list(info['EnemyDB_game_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                    pass
+                                else:
+                                    _EditDB_common_Replacements_.append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                            except:
+                                _EditDB_common_Replacements_.append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+
+                            if exists(old_archive, 'Mush\\EditDB_common.byml'): #==== Check if file exists ====#
+                                info['EditDB_common_old_info'] = oead.byml.from_binary(old_archive['Mush\\EditDB_common.byml'].data)
+                            if exists(new_archive, 'Mush\\EditDB_common.byml'): #==== Check if file exists ====#
+                                info['EditDB_common_new_info'] = oead.byml.from_binary(new_archive['Mush\\EditDB_common.byml'].data)
+                            for i in range(len(list(info['EditDB_common_new_info']))): #==== Loop for every item in each list ====#
                                 try:
-                                    if dict(list(info['3W_new_info'])[i]) == dict(list(info['3W_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                    if dict(list(info['EditDB_common_new_info'])[i]) == dict(list(info['EditDB_common_old_info'])[i]): #==== Check if both items are equal or not ====#
                                         pass
                                     else:
-                                        _3W_Replacements_.append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                        _EditDB_common_Replacements_.append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
                                 except:
-                                    _3W_Replacements_.append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                    _EditDB_common_Replacements_.append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
 
                             for file_name in _new_archive_.list_files(): #==== Loop for each file inside the archive ====#
                                 print(pathlib.PurePath(file_name))
@@ -281,64 +323,97 @@ def merge(): #==== Main function ====#
                                 open(SuperMarioMaker2ModMergerOutput+file_path, 'rb').write(open(SuperMarioMaker2Mod+file_path, 'rb').read())
 
                         if os.path.split(SuperMarioMaker2Mod+file_path)[1] == 'Static.pack':
-                            info = { #==== Create dict object ====#
-                                    'M1_old_info':oead.byml.from_binary(old_archive['Mush\\M1_SceneDB.byml'].data),
-                                    'M1_new_info':oead.byml.from_binary(new_archive['Mush\\M1_SceneDB.byml'].data),
-                                    'M3_old_info':oead.byml.from_binary(old_archive['Mush\\M3_SceneDB.byml'].data),
-                                    'M3_new_info':oead.byml.from_binary(new_archive['Mush\\M3_SceneDB.byml'].data),
-                                    'MW_old_info':oead.byml.from_binary(old_archive['Mush\\MW_SceneDB.byml'].data),
-                                    'MW_new_info':oead.byml.from_binary(new_archive['Mush\\MW_SceneDB.byml'].data),
-                                    'WU_old_info':oead.byml.from_binary(old_archive['Mush\\WU_SceneDB.byml'].data),
-                                    'WU_new_info':oead.byml.from_binary(new_archive['Mush\\WU_SceneDB.byml'].data),
-                                    '3W_old_info':oead.byml.from_binary(old_archive['Mush\\3W_SceneDB.byml'].data),
-                                    '3W_new_info':oead.byml.from_binary(new_archive['Mush\\3W_SceneDB.byml'].data)
-                                }
-                            if os.path.split(SuperMarioMaker2Mod+file_path)[1] == 'Static.pack':
-                                for i in range(len(list(info['M1_new_info']))): #==== Loop for every item in each list ====#
-                                    try:
-                                        if dict(list(info['M1_new_info'])[i]) == dict(list(info['M1_old_info'])[i]): #==== Check if both items are equal or not ====#
-                                            pass
-                                        else:
-                                            _M1_Replacements_.append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
-                                    except:
+                            info = {} #==== Create dict object ====#
+                            if exists(old_archive, 'Mush\\M1_SceneDB.byml'): #==== Check if file exists ====#
+                                info['M1_old_info'] = oead.byml.from_binary(old_archive['Mush\\M1_SceneDB.byml'].data)
+                            if exists(new_archive, 'Mush\\M1_SceneDB.byml'): #==== Check if file exists ====#
+                                info['M1_new_info'] = oead.byml.from_binary(new_archive['Mush\\M1_SceneDB.byml'].data)
+                            for i in range(len(list(info['M1_new_info']))): #==== Loop for every item in each list ====#
+                                try:
+                                    if dict(list(info['M1_new_info'])[i]) == dict(list(info['M1_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                        pass
+                                    else:
                                         _M1_Replacements_.append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                except:
+                                    _M1_Replacements_.append([i, list(info['M1_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
 
-                                for i in range(len(list(info['M3_new_info']))): #==== Loop for every item in each list ====#
-                                    try:
-                                        if dict(list(info['M3_new_info'])[i]) == dict(list(info['M3_old_info'])[i]): #==== Check if both items are equal or not ====#
-                                            pass
-                                        else:
-                                            _M3_Replacements_.append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
-                                    except:
+                            if exists(old_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+                                info['M3_old_info'] = oead.byml.from_binary(old_archive['Mush\\M3_SceneDB.byml'].data)
+                            if exists(new_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+                                info['M3_new_info'] = oead.byml.from_binary(new_archive['Mush\\M3_SceneDB.byml'].data)
+                            for i in range(len(list(info['M3_new_info']))): #==== Loop for every item in each list ====#
+                                try:
+                                    if dict(list(info['M3_new_info'])[i]) == dict(list(info['M3_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                        pass
+                                    else:
                                         _M3_Replacements_.append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                except:
+                                    _M3_Replacements_.append([i, list(info['M3_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
 
-                                for i in range(len(list(info['MW_new_info']))): #==== Loop for every item in each list ====#
-                                    try:
-                                        if dict(list(info['MW_new_info'])[i]) == dict(list(info['MW_old_info'])[i]): #==== Check if both items are equal or not ====#
-                                            pass
-                                        else:
-                                            _MW_Replacements_.append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
-                                    except:
+                            if exists(old_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+                                info['MW_old_info'] = oead.byml.from_binary(old_archive['Mush\\MW_SceneDB.byml'].data)
+                            if exists(new_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+                                info['MW_new_info'] = oead.byml.from_binary(new_archive['Mush\\MW_SceneDB.byml'].data)
+                            for i in range(len(list(info['MW_new_info']))): #==== Loop for every item in each list ====#
+                                try:
+                                    if dict(list(info['MW_new_info'])[i]) == dict(list(info['MW_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                        pass
+                                    else:
                                         _MW_Replacements_.append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                except:
+                                    _MW_Replacements_.append([i, list(info['MW_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
 
-                                for i in range(len(list(info['WU_new_info']))): #==== Loop for every item in each list ====#
-                                    try:
-                                        if dict(list(info['WU_new_info'])[i]) == dict(list(info['WU_old_info'])[i]): #==== Check if both items are equal or not ====#
-                                            pass
-                                        else:
-                                            _WU_Replacements_.append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
-
-                                    except:
+                            if exists(old_archive, 'Mush\\MW_SceneDB.byml'): #==== Check if file exists ====#
+                                info['WU_old_info'] = oead.byml.from_binary(old_archive['Mush\\WU_SceneDB.byml'].data)
+                            if exists(new_archive, 'Mush\\MW_SceneDB.byml'): #==== Check if file exists ====#
+                                info['WU_new_info'] = oead.byml.from_binary(new_archive['Mush\\WU_SceneDB.byml'].data)
+                            for i in range(len(list(info['WU_new_info']))): #==== Loop for every item in each list ====#
+                                try:
+                                    if dict(list(info['WU_new_info'])[i]) == dict(list(info['WU_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                        pass
+                                    else:
                                         _WU_Replacements_.append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                except:
+                                    _WU_Replacements_.append([i, list(info['WU_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
 
-                                for i in range(len(list(info['3W_new_info']))): #==== Loop for every item in each list ====#
-                                    try:
-                                        if dict(list(info['3W_new_info'])[i]) == dict(list(info['3W_old_info'])[i]): #==== Check if both items are equal or not ====#
-                                            pass
-                                        else:
-                                            _3W_Replacements_.append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
-                                    except:
+                            if exists(old_archive, 'Mush\\WU_SceneDB.byml'): #==== Check if file exists ====#
+                                info['3W_old_info'] = oead.byml.from_binary(old_archive['Mush\\3W_SceneDB.byml'].data)
+                            if exists(new_archive, 'Mush\\WU_SceneDB.byml'): #==== Check if file exists ====#
+                                info['3W_new_info'] = oead.byml.from_binary(new_archive['Mush\\3W_SceneDB.byml'].data)
+                            for i in range(len(list(info['3W_new_info']))): #==== Loop for every item in each list ====#
+                                try:
+                                    if dict(list(info['3W_new_info'])[i]) == dict(list(info['3W_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                        pass
+                                    else:
                                         _3W_Replacements_.append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                except:
+                                    _3W_Replacements_.append([i, list(info['3W_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+
+                            if exists(old_archive, 'Mush\\EnemyDB_game.byml'): #==== Check if file exists ====#
+                                info['EnemyDB_game_old_info'] = oead.byml.from_binary(old_archive['Mush\\EnemyDB_game.byml'].data)
+                            if exists(new_archive, 'Mush\\EnemyDB_game.byml'): #==== Check if file exists ====#
+                                info['EnemyDB_game_new_info'] = oead.byml.from_binary(new_archive['Mush\\EnemyDB_game.byml'].data)
+                            for i in range(len(list(info['EnemyDB_game_new_info']))): #==== Loop for every item in each list ====#
+                                try:
+                                    if dict(list(info['EnemyDB_game_new_info'])[i]) == dict(list(info['EnemyDB_game_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                        pass
+                                    else:
+                                        _EditDB_common_Replacements_.append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                except:
+                                    _EditDB_common_Replacements_.append([i, list(info['EnemyDB_game_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+
+                            if exists(old_archive, 'Mush\\EditDB_common.byml'): #==== Check if file exists ====#
+                                info['EditDB_common_old_info'] = oead.byml.from_binary(old_archive['Mush\\EditDB_common.byml'].data)
+                            if exists(new_archive, 'Mush\\EditDB_common.byml'): #==== Check if file exists ====#
+                                info['EditDB_common_new_info'] = oead.byml.from_binary(new_archive['Mush\\EditDB_common.byml'].data)
+                            for i in range(len(list(info['EditDB_common_new_info']))): #==== Loop for every item in each list ====#
+                                try:
+                                    if dict(list(info['EditDB_common_new_info'])[i]) == dict(list(info['EditDB_common_old_info'])[i]): #==== Check if both items are equal or not ====#
+                                        pass
+                                    else:
+                                        _EditDB_common_Replacements_.append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
+                                except:
+                                    _EditDB_common_Replacements_.append([i, list(info['EditDB_common_new_info'])[i]]) #==== Add replacement to the '_Replacements_' list ====#
 
                                 for file_name in _new_archive_.list_files(): #==== Loop for each file inside the archive ====#
                                     print(pathlib.PurePath(file_name))
@@ -390,73 +465,116 @@ def merge(): #==== Main function ====#
                         else:
                             print(False)
 
-    if not os.path.exists(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack'):
-        os.makedirs(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):], mode=511, exist_ok=True)
+    if not os.path.exists(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack'): #==== Check if file exists ====#
+        os.makedirs(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):], mode=511, exist_ok=True) #==== Create directories ====#
         open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\'+file, 'wb').write(open(SuperMarioMaker2Mod+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', "rb").read()) #==== Create file ====#
         _archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
-        _archive.load(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'rb').read())
+        _archive.load(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'rb').read()) #==== Read new file and load it ====#
     else:
         _archive = SarcLib.SARC_Archive() #==== Create SarcLib.FileArchive.SARC_Archive object ====#
-        _archive.load(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'rb').read())
+        _archive.load(open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'rb').read()) #==== Read new file and load it ====#
 
-    info = { #==== Create dict object ====#
-        'M1_new_info':oead.byml.from_binary(_archive['Mush\\M1_SceneDB.byml'].data),
-        'M3_new_info':oead.byml.from_binary(_archive['Mush\\M3_SceneDB.byml'].data),
-        'MW_new_info':oead.byml.from_binary(_archive['Mush\\MW_SceneDB.byml'].data),
-        'WU_new_info':oead.byml.from_binary(_archive['Mush\\WU_SceneDB.byml'].data),
-        '3W_new_info':oead.byml.from_binary(_archive['Mush\\3W_SceneDB.byml'].data)
-    }
+    info = {} #==== Create dict object ====#
+    if exists(_archive, 'Mush\\M1_SceneDB.byml'): #==== Check if file exists ====#
+        info['M1_new_info'] = oead.byml.from_binary(_archive['Mush\\M1_SceneDB.byml'].data)
+    if exists(_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+        info['M3_new_info'] = oead.byml.from_binary(_archive['Mush\\M3_SceneDB.byml'].data)
+    if exists(_archive, 'Mush\\M3_SceneDB.byml'): #==== Check if file exists ====#
+        info['MW_new_info'] = oead.byml.from_binary(_archive['Mush\\MW_SceneDB.byml'].data)
+    if exists(_archive, 'Mush\\MW_SceneDB.byml'): #==== Check if file exists ====#
+        info['WU_new_info'] = oead.byml.from_binary(_archive['Mush\\WU_SceneDB.byml'].data)
+    if exists(_archive, 'Mush\\WU_SceneDB.byml'): #==== Check if file exists ====#
+        info['3W_new_info'] = oead.byml.from_binary(_archive['Mush\\3W_SceneDB.byml'].data)
+    if exists(_archive, 'Mush\\EnemyDB_game.byml'): #==== Check if file exists ====#
+        info['EnemyDB_game_new_info'] = oead.byml.from_binary(_archive['Mush\\EnemyDB_game.byml'].data)
+    if exists(_archive, 'Mush\\EditDB_common.byml'): #==== Check if file exists ====#
+        info['EditDB_common_new_info'] = oead.byml.from_binary(_archive['Mush\\EditDB_common.byml'].data)
+
+    #==== M1 ====#
     for _M1_Replacement_ in _M1_Replacements_:
         info['M1_new_info'][_M1_Replacement_[0]] = _M1_Replacement_[1]
 
+    #==== M3 ====#
     for _M3_Replacement_ in _M3_Replacements_:
         info['M3_new_info'][_M3_Replacement_[0]] = _M3_Replacement_[1]
 
+    #==== MW ====#
     for _MW_Replacement_ in _MW_Replacements_:
         info['MW_new_info'][_MW_Replacement_[0]] = _MW_Replacement_[1]
 
+    #==== WU ====#
     for _WU_Replacement_ in _WU_Replacements_:
         info['WU_new_info'][_WU_Replacement_[0]] = _WU_Replacement_[1]
 
+    #==== 3W ====#
     for _3W_Replacement_ in _3W_Replacements_:
         print()
         info['3W_new_info'][_3W_Replacement_[0]] = _3W_Replacement_[1]
 
+    #==== EnemyDB_game ====#
+    for _EnemyDB_game_Replacement_ in _EnemyDB_game_Replacements_:
+        print()
+        info['EnemyDB_game_new_info'][_EnemyDB_game_Replacement_[0]] = _EnemyDB_game_Replacement_[1]
+
+    #==== EditDB_common ====#
+    for _EditDB_common_Replacement_ in _EditDB_common_Replacements_:
+        print()
+        info['EditDB_common_new_info'][_EditDB_common_Replacement_[0]] = _EditDB_common_Replacement_[1]
+
     yaml_util.add_constructors(yaml.CLoader)
 
+    #==== M1 ====#
     _M1_text_ = oead.byml.to_text(info['M1_new_info'])
     _M1_text_ = yaml.load(_M1_text_, Loader=yaml.CLoader)
-    _M1_buf_ = io.BytesIO()
-    byml.Writer(_M1_text_).write(_M1_buf_)
+    _M1_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(_M1_text_).write(_M1_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
 
+    #==== M3 ====#
     _M3_text_ = oead.byml.to_text(info['M3_new_info'])
     _M3_text_ = yaml.load(_M3_text_, Loader=yaml.CLoader)
-    _M3_buf_ = io.BytesIO()
-    byml.Writer(_M3_text_).write(_M3_buf_)
+    _M3_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(_M3_text_).write(_M3_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
 
+    #==== MW ====#
     _MW_text_ = oead.byml.to_text(info['MW_new_info'])
     _MW_text_ = yaml.load(_MW_text_, Loader=yaml.CLoader)
-    _MW_buf_ = io.BytesIO()
-    byml.Writer(_MW_text_).write(_MW_buf_)
+    _MW_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(_MW_text_).write(_MW_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
 
+    #==== WU ====#
     _WU_text_ = oead.byml.to_text(info['WU_new_info'])
     _WU_text_ = yaml.load(_WU_text_, Loader=yaml.CLoader)
-    _WU_buf_ = io.BytesIO()
-    byml.Writer(_WU_text_).write(_WU_buf_)
+    _WU_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(_WU_text_).write(_WU_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
 
+    #==== 3W ====#
     _3W_text_ = oead.byml.to_text(info['3W_new_info'])
     _3W_text_ = yaml.load(_3W_text_, Loader=yaml.CLoader)
-    _3W_buf_ = io.BytesIO()
-    byml.Writer(_3W_text_).write(_3W_buf_)
+    _3W_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(_3W_text_).write(_3W_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
 
-    _archive['Mush/M1_SceneDB.byml'].data = (_M1_buf_.getbuffer())
-    _archive['Mush/M3_SceneDB.byml'].data = (_M3_buf_.getbuffer())
-    _archive['Mush/MW_SceneDB.byml'].data = (_MW_buf_.getbuffer())
-    _archive['Mush/WU_SceneDB.byml'].data = (_WU_buf_.getbuffer())
-    _archive['Mush/3W_SceneDB.byml'].data = (_3W_buf_.getbuffer())
+    #==== EnemyDB_game ====#
+    _EnemyDB_game_text_ = oead.byml.to_text(info['EnemyDB_game_new_info'])
+    _EnemyDB_game_text_ = yaml.load(_EnemyDB_game_text_, Loader=yaml.CLoader)
+    _EnemyDB_game_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(_EnemyDB_game_text_).write(_EnemyDB_game_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
 
-    open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'wb').write(_archive.save()[0])
+    #==== EditDB_common ====#
+    _EditDB_common_text_ = oead.byml.to_text(info['EditDB_common_new_info'])
+    _EditDB_common_text_ = yaml.load(_EditDB_common_text_, Loader=yaml.CLoader)
+    _EditDB_common_buf_ = io.BytesIO() #==== Create _io.BytesIO object ====#
+    byml.Writer(_EditDB_common_text_).write(_EditDB_common_buf_) #==== Convert to byml and write to _io.BytesIO object ====#
 
-    print('All Super Mario Maker 2 Mods Successfully Merged...')
+    _archive['Mush/M1_SceneDB.byml'].data = (_M1_buf_.getbuffer()) #==== M1 ====#
+    _archive['Mush/M3_SceneDB.byml'].data = (_M3_buf_.getbuffer()) #==== M3 ====#
+    _archive['Mush/MW_SceneDB.byml'].data = (_MW_buf_.getbuffer()) #==== MW ====#
+    _archive['Mush/WU_SceneDB.byml'].data = (_WU_buf_.getbuffer()) #==== WU ====#
+    _archive['Mush/3W_SceneDB.byml'].data = (_3W_buf_.getbuffer()) #==== 3W ====#
+    _archive['Mush/EnemyDB_game.byml'].data = (_EnemyDB_game_buf_.getbuffer()) #==== EnemyDB_game ====#
+    _archive['Mush/EditDB_common.byml'].data = (_EditDB_common_buf_.getbuffer()) #==== EditDB_common ====#
 
-if __name__ == '__main__': merge()
+    open(SuperMarioMaker2ModMergerOutput+path[len(SuperMarioMaker2Mod):]+'\\Static.pack', 'wb').write(_archive.save()[0]) #==== Save to file ====#
+
+    print('All Super Mario Maker 2 Mods Successfully Merged...') #==== Let user know that the script has finished merging their mods ====#
+
+if __name__ == '__main__': merge() #==== Call merge function ====#
