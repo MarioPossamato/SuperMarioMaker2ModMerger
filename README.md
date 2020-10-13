@@ -53,6 +53,7 @@ Also, merging multiple SMM2 mods may take a while, so please be patient! :)
 - [syaz0](https://github.com/zeldamods/syaz0)
 - [byml](https://github.com/zeldamods/byml-v2)
 - [oead](https://github.com/zeldamods/oead)
+- [PyQt5](https://pypi.org/project/PyQt5/)
 
 # Using this tool
 - Run `SuperMarioMaker2ModMerger.bat`
