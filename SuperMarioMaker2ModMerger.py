@@ -80,6 +80,8 @@ SuperMarioMaker2Mods = [ #==== Mods to merge ====#
         # 'SuperMarioMaker2Mods\\SuperMarioMaker2ModExample6'
         ]
 
+yaml_util.add_constructors(yaml.CLoader)
+
 #==== Main window ====#
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -663,8 +665,6 @@ class MainWindow(QtWidgets.QMainWindow):
             for r in Pack_Replacements['Edit']:
                 info['EditDB_common_new_info'][Pack_Replacements['Edit'][0]] = Pack_Replacements['Edit'][1]
 
-        yaml_util.add_constructors(yaml.CLoader)
-
         #==== M1 ====#
         text_M1 = oead.byml.to_text(info['M1_new_info'])
         text_M1 = yaml.load(text_M1, Loader=yaml.CLoader)
@@ -730,4 +730,19 @@ def main():
     app.exec_()
     sys.exit()
 
-if __name__ == '__main__': main()
+def mFlag():
+    filename = SuperMarioMaker2+'\\romfs\\Pack\\Static.pack'
+    arc1 = sarc.SARC(open(filename, 'rb').read())
+    arc2 = SarcLib.SARC_Archive()
+    arc2.load(open(filename, "rb").read())
+    for file in arc1.list_files():
+        if file.startswith('Param/EnemyModelParams'):
+            data = arc2[file].data
+            b = oead.byml.from_binary(data)
+            print(file, dict(dict(b)[list(b)[0]])['fea17fb7'].v)
+        else:
+            pass
+
+if __name__ == '__main__':
+    mFlag()
+    main()
